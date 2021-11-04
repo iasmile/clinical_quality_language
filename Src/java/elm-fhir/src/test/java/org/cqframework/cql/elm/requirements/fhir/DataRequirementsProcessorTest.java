@@ -102,6 +102,17 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
+    public void TestDataRequirementsColorectalCancerScreening() {
+        // TODO: Implement COL
+    }
+
+    @Test
+    public void TestDataRequirementsWithBirthDate() {
+        // (Cervical Cancer Screening) CCS Has a data requirement that depends on Patient birthdate
+        // Should that be a subject parameter to the datarequirements operation, or should we expose parameters in data requirements?
+    }
+
+    @Test
     public void TestDataRequirementsProcessorOpioidIssueExpression() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
