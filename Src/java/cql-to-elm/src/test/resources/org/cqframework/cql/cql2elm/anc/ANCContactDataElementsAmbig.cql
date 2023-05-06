@@ -5,4 +5,4 @@ define "Terminology Ambiguity":
 
 define "Where Expression Ambiguity":
   [Encounter] E
-    where E.id = Id(encounter)
+    where E.id = encounter
