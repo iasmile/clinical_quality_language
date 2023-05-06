@@ -1,9 +1,14 @@
 package org.cqframework.cql.cql2elm.anc;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.time.StopWatch;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.TestUtils;
+import org.cqframework.cql.gen.cqlLexer;
+import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -22,8 +27,6 @@ public class BaseTest {
 
    @Test
    public void testAncDak() throws IOException {
-      var options = CqlTranslatorOptions.defaultOptions();
-
       int iterations = 1000;
       int step = 10;
       long last = 0;
@@ -31,8 +34,13 @@ public class BaseTest {
 
       sw.start();
       for (int i = 0; i < iterations; i ++) {
-         TestUtils.reset();
-         CqlTranslator translator = TestUtils.createTranslator("anc/ANCDT17.cql", options);
+
+         var cs = CharStreams.fromStream(BaseTest.class.getResourceAsStream("ANCContactDataElements.cql"));
+         cqlLexer lexer = new cqlLexer(cs);
+         CommonTokenStream tokens = new CommonTokenStream(lexer);
+         cqlParser parser = new cqlParser(tokens);
+         parser.setBuildParseTree(true);
+         ParseTree tree = parser.library();
 
          if (i > 0 & i % step == 0) {
             var millis = sw.getTime(TimeUnit.MILLISECONDS);
