@@ -2,6 +2,12 @@ package org.cqframework.cql.cql2elm.anc;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.DecisionInfo;
+import org.antlr.v4.runtime.atn.DecisionState;
+import org.antlr.v4.runtime.atn.ParseInfo;
+import org.antlr.v4.runtime.atn.PredictionMode;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.time.StopWatch;
 import org.cqframework.cql.cql2elm.CqlTranslator;
@@ -27,33 +33,34 @@ public class BaseTest {
 
    @Test
    public void testAncDak() throws IOException {
-      int iterations = 1000;
-      int step = 10;
-      long last = 0;
-      var sw = new StopWatch();
+      var cs = CharStreams.fromStream(BaseTest.class.getResourceAsStream("ANCContactDataElements.cql"));
+      cqlLexer lexer = new cqlLexer(cs);
+      CommonTokenStream tokens = new CommonTokenStream(lexer);
+      cqlParser parser = new cqlParser(tokens);
+      var listener = new org.antlr.v4.runtime.DiagnosticErrorListener();
+      parser.addErrorListener(listener); // add ours
+      parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+      parser.library();
 
-      sw.start();
-      for (int i = 0; i < iterations; i ++) {
+      // ParseInfo parseInfo = parser.getParseInfo();
+      // ATN atn = parser.getATN();
+      // for (DecisionInfo di : parseInfo.getDecisionInfo()) {
+      //    DecisionState ds = atn.decisionToState.get(di.decision);
+      //    String ruleName = cqlParser.ruleNames[ds.ruleIndex];
 
-         var cs = CharStreams.fromStream(BaseTest.class.getResourceAsStream("ANCContactDataElements.cql"));
-         cqlLexer lexer = new cqlLexer(cs);
-         CommonTokenStream tokens = new CommonTokenStream(lexer);
-         cqlParser parser = new cqlParser(tokens);
-         parser.setBuildParseTree(true);
-         ParseTree tree = parser.library();
+      //    // System.out.println(ruleName +" -> " + di.toString());
 
-         if (i > 0 & i % step == 0) {
-            var millis = sw.getTime(TimeUnit.MILLISECONDS);
-            var time = millis - last;
-            last = millis;
-            System.out.printf("iteration: %s, step time: %s, step avg: %s%n", i, time, (double)time / step);
-         }
-      }
+      //    if (di.ambiguities.size() > 0) {
+      //       System.out.println(ruleName + " -> " + di.toString());
 
-      sw.stop();
-      var millis = sw.getTime(TimeUnit.MILLISECONDS);
+      //       System.out.println("ambiguities");
+      //       for (var a : di.ambiguities) {
 
-      System.out.printf("iterations: %s, time: %s, avg: %s%n", iterations, millis, (double)millis / iterations);
-
+      //          String text = a.input.getText(Interval.of(a.startIndex, a.stopIndex));
+      //          System.out.printf("alts: %s, decision: %s, range: %s-%s, text: %n%s%n", a.ambigAlts.size(), a.decision,
+      //                a.startIndex, a.stopIndex, text);
+      //       }
+      //    }
+      // }
    }
 }
