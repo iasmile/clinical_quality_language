@@ -33,7 +33,7 @@ public class BaseTest {
 
    @Test
    public void testAncDak() throws IOException {
-      var cs = CharStreams.fromStream(BaseTest.class.getResourceAsStream("ANCContactDataElements.cql"));
+      var cs = CharStreams.fromStream(BaseTest.class.getResourceAsStream("ANCContactDataElementsAmbig.cql"));
       cqlLexer lexer = new cqlLexer(cs);
       CommonTokenStream tokens = new CommonTokenStream(lexer);
       cqlParser parser = new cqlParser(tokens);
