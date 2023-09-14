@@ -32,14 +32,14 @@ public class ForwardInvocationValidator {
 
     // LUKETODO: We definitely need better names for the parameters
     // LUKETODO: why is BaseTest.TestIntervalImplicitConversion failing when the params clearly don't match: (13,11): Could not resolve call to operator LengthInDays with signature (FHIR.Period).
-    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap, OperatorMap operatorMap) {
+    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap, OperatorMap operatorMap) {
         // LUKETODO: for now disable this:
         if (1==1) {
             return true;
         }
 
         if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap, operatorMap)) {
-            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction, conversionMap);
+            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), conversionMap);
         }
 
         return false;
@@ -86,11 +86,9 @@ public class ForwardInvocationValidator {
     // The ConversionMap comes from the LibaryBuilder
     // LibraryBuilder passes the ConversionMap
 
-    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap) {
-        final PreCompileOutput evaluatedFunctionPreCompileOutput = preCompileFunction.apply(definition);
-
+    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, FunctionDefinitionInfo functionDefinitionInfo ConversionMap conversionMap) {
         // another sanity check
-        if (! callContextFromCaller.getOperatorName().equals(evaluatedFunctionPreCompileOutput.getFunctionDef().getName())) {
+        if (! callContextFromCaller.getOperatorName().equals(functionDefinitionInfo.getPreCompileOutput().getFunctionDef().getName())) {
             return false;
         }
 

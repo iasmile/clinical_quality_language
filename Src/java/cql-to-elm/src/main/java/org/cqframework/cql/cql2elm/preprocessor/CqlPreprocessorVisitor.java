@@ -318,15 +318,16 @@ Expected: is "http://hl7.org/fhir"
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        // LUKETODO:  not sure where to put this:
+        final PreCompileOutput preCompileOutput = preCompile(ctx);
+//        logger.info("preCompileOutput: {}", preCompileOutput);
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
+        functionDefinition.setPreCompileOutput(preCompileOutput);
         processHeader(ctx, functionDefinition);
         libraryInfo.addFunctionDefinition(functionDefinition);
-        // LUKETODO:  not sure where to put this:
-        final PreCompileOutput preCompileOutput = preCompile(ctx);
-//        logger.info("preCompileOutput: {}", preCompileOutput);
 
         return functionDefinition;
     }

@@ -4443,7 +4443,12 @@ DATETIME
         // check for forward declarations of functions
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
-        if (result == null) {
+        if (result != null) {
+            return result;
+        }
+
+        // No matching function that's already been compiled, so start attempting to compile one
+
             // LUKETODO:  using the CallContext causes this test to fail: org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest#testImplicitFHIRHelpers
             // This is because the CallContext callParamString is
             // fhir.period
@@ -4460,35 +4465,21 @@ DATETIME
             final Expression resolvedFunctionExpression = null;
 
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-            if (functionInfos != null) {
-                for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    if (! ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, this::preCompile, libraryBuilder.getConversionMap(), libraryBuilder.getCompiledLibrary().getOperatorMap())) {
-                        continue;
-                    }
 
-                    String saveContext = currentContext;
-                    currentContext = functionInfo.getContext();
-                    try {
-                        Stack<Chunk> saveChunks = chunks;
-                        chunks = new Stack<Chunk>();
-                        forwardFunctions.push(functionInfo);
-                        try {
-                            // Have to call the visit to allow the outer processing to occur
-                            visit(functionInfo.getDefinition());
-                        }
-                        finally {
-                            forwardFunctions.pop();
-                            chunks = saveChunks;
-                        }
-                    } finally {
-                        currentContext = saveContext;
-                    }
-                }
+            var resolvedFunctionInfo = (FunctionDefinitionInfo)resolveOnSignature(functionInfos, expectedCallContext);
+            // TODO: JP - null = no matching function definition = Exception
+            forwardFunctions.push(resolvedFunctionInfo);
+            try {
+                // TODO: JP - If stack alrleady contains this functionInfo, explode. Recursion is disallowed.
+                // Have to call the visit to allow the outer processing to occur
+                visit(resolvedFunctionInfo.getDefinition());
             }
-            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-        }
+            finally {
+                forwardFunctions.pop();
 
-        return result;
+            }
+
+            return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
     }
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {

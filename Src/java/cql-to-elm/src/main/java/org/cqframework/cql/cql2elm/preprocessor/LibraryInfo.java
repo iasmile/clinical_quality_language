@@ -227,6 +227,8 @@ public class LibraryInfo extends BaseInfo {
             infos = new ArrayList<FunctionDefinitionInfo>();
             functionDefinitions.put(functionDefinition.getName(), infos);
         }
+
+        // TODO: JP - Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
         infos.add(functionDefinition);
         addDefinition(functionDefinition);
     }
