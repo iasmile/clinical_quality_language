@@ -11,5 +11,6 @@
         "qicore",
         "testng",
         "trackback"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
