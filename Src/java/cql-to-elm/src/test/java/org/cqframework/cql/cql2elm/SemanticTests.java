@@ -312,6 +312,10 @@ public class SemanticTests {
     public void testIssue616() throws IOException {
         TestUtils.runSemanticTest("Issue616.cql", 1);
     }
+    @Test
+    public void testIssue1223() throws IOException {
+        TestUtils.runSemanticTest("Issue1223.cql", 0);
+    }
 
     public void testIssue617() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue617.cql", 0);
