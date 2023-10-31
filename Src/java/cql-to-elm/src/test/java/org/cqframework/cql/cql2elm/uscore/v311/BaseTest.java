@@ -80,7 +80,6 @@ public class BaseTest {
             </where>
          </expression>
  */
-
         ExpressionDef def = defs.get("TestPrimitives");
         assertThat(def.getExpression(), instanceOf(Query.class));
         Query query = (Query)def.getExpression();
@@ -88,7 +87,7 @@ public class BaseTest {
         And and1 = (And)query.getWhere();
         assertThat(and1.getOperand().get(0), instanceOf(And.class));
         And and2 = (And)and1.getOperand().get(0);
-        assertThat(and2.getOperand().get(0), instanceOf(And.class));
+        assertThat(and2.getOperand().get(0), instanceOf(And.class)); 
         And and3 = (And)and2.getOperand().get(0);
         assertThat(and3.getOperand().get(0), instanceOf(And.class));
         And and4 = (And)and3.getOperand().get(0);
@@ -402,5 +401,10 @@ public class BaseTest {
         assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
         literal = (Literal)equal.getOperand().get(1);
         assertThat(literal.getValue(), is("vital-signs"));
-    }
+        
+        def = defs.get("Address");  
+        assertThat(def.getExpression(), instanceOf(Flatten.class));
+        def = defs.get("Address Line 1");
+        assertThat(def.getExpression(), instanceOf(Indexer.class));
+   }
 }
