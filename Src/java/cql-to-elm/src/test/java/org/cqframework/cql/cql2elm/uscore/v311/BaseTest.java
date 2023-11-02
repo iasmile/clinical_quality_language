@@ -402,5 +402,5 @@ public class BaseTest {
         assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
         literal = (Literal)equal.getOperand().get(1);
         assertThat(literal.getValue(), is("vital-signs"));
-   }
+    }
 }
