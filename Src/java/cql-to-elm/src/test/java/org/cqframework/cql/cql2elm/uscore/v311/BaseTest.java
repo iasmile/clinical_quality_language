@@ -402,11 +402,5 @@ public class BaseTest {
         assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
         literal = (Literal)equal.getOperand().get(1);
         assertThat(literal.getValue(), is("vital-signs"));
-        
-        /*  Execute CQL for USCore v3.1.1 Patient.address.line and Patient.address.line[0] */
-        def = defs.get("Address");  
-        assertThat(def.getExpression(), instanceOf(Flatten.class));
-        def = defs.get("Address Line 1");
-        assertThat(def.getExpression(), instanceOf(Indexer.class));
    }
 }

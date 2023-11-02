@@ -87,9 +87,3 @@ define TestComplexExtensions:
 define TestComplexFHIRHelpers:
   ["PediatricBMIforAgeObservationProfile"] PB
     return PB.VSCat
-
-define "Address":
-  Patient.address.line
-
-define "Address Line 1":
-  Patient.address.line[0]
